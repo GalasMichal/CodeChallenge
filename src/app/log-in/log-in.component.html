@@ -14,7 +14,7 @@
 
 
     </mat-form-field>
-    <mat-form-field>
+    <mat-form-field appearance="outline">
       <mat-label>Please enter your password</mat-label>
       <input type="password" matInput [required] [type]="isVisible ? 'password' : 'text'" />
       <button mat-icon-button matSuffix (click)="showPassword()">
@@ -23,6 +23,6 @@
     </mat-form-field>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button>Log in</button>
+    <button class="btn-log-in" mat-raised-button>Log in</button>
   </mat-card-actions>
 </mat-card>
