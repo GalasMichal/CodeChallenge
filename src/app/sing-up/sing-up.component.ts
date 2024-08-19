@@ -12,6 +12,7 @@ import {BreakpointObserver} from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MatCardModule } from '@angular/material/card';
+import {MatSelectModule} from '@angular/material/select';
 
 @Component({
   selector: 'app-sing-up',
@@ -26,6 +27,7 @@ import { MatCardModule } from '@angular/material/card';
     AsyncPipe,
     CommonModule,
     MatCardModule,
+    MatSelectModule
   ],
   templateUrl: './sing-up.component.html',
   styleUrl: './sing-up.component.scss',
