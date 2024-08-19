@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.Design;
+using System.Text.Json.Serialization;
 
 namespace RegistrationApi.Models
 {
@@ -8,11 +10,14 @@ namespace RegistrationApi.Models
         public int Id { get; set; }
 
         [Required]
-        public string Name { get; set; } = string.Empty; // Initialisiert mit leerem Standardwert
+        public string Name { get; set; } = string.Empty;
 
         [Required]
-        public string Industry { get; set; } = string.Empty; // Initialisiert mit leerem Standardwert
+        public string Industry { get; set; } = string.Empty;
+       
 
-        public ICollection<User>? Users { get; set; } // Nullable, da eine Firma keine Benutzer haben muss
+        // Ignoriere diese Eigenschaft bei der JSON-Serialisierung, um zirkuläre Referenzen zu vermeiden
+        [JsonIgnore]
+        public ICollection<User>? Users { get; set; }
     }
 }
