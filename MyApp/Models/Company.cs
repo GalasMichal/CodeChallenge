@@ -13,8 +13,8 @@ namespace RegistrationApi.Models
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        public string Industry { get; set; } = string.Empty;
-       
+        public string Sector { get; set; } = string.Empty;
+
 
         // Ignoriere diese Eigenschaft bei der JSON-Serialisierung, um zirkuläre Referenzen zu vermeiden
         [JsonIgnore]
