@@ -13,8 +13,10 @@ namespace RegistrationApi.Models
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        public string Sector { get; set; } = string.Empty;
+        public int SectorId { get; set; }
 
+        // Verknüpfung zur zugehörigen Sector-Entität
+        public required Sector Sector { get; set; }
 
         // Ignoriere diese Eigenschaft bei der JSON-Serialisierung, um zirkuläre Referenzen zu vermeiden
         [JsonIgnore]
