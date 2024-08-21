@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Company } from '../../models/company.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,7 @@ export class CompanyServiceService {
   }
 
   updateCompany(company: Company): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${company.id}`, company);
+    return this.http.put<void>(`${this.apiUrl}/${company.Id}`, company);
   }
 
   deleteCompany(id: number): Observable<void> {
