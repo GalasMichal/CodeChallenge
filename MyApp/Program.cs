@@ -16,6 +16,18 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Konfiguriere CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowMyOrigins",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") // Erlaube Anfragen von diesem Ursprung
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 // Konfiguriere Swagger für API-Dokumentation
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -30,8 +42,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Wende CORS-Policy an
+app.UseCors("AllowMyOrigins");
+
 app.UseAuthorization();
 app.MapControllers(); // Registriere API-Controller
 
 app.Run();
-

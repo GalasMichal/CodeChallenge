@@ -7,7 +7,7 @@ namespace RegistrationApi.Models
 {
     public class Company
     {
-        public int Id { get; set; }
+        public int CompanyId { get; set; }
 
         [Required]
         public string Name { get; set; } = string.Empty;

@@ -44,14 +44,14 @@ namespace RegistrationApi.Controllers
             _context.Companies.Add(company);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetCompany), new { id = company.Id }, company);
+            return CreatedAtAction(nameof(GetCompany), new { id = company.CompanyId }, company);
         }
 
         // PUT: api/company/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCompany(int id, Company company)
         {
-            if (id != company.Id)
+            if (id != company.CompanyId)
             {
                 return BadRequest();
             }
@@ -95,7 +95,7 @@ namespace RegistrationApi.Controllers
 
         private bool CompanyExists(int id)
         {
-            return _context.Companies.Any(e => e.Id == id);
+            return _context.Companies.Any(e => e.CompanyId == id);
         }
     }
 }
