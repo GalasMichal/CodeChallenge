@@ -39,8 +39,21 @@ namespace RegistrationApi.Controllers
 
         // POST: api/company
         [HttpPost]
-        public async Task<ActionResult<Company>> PostCompany(Company company)
+        public async Task<ActionResult<Company>> PostCompany([FromBody] Company company)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // Gibt die Validierungsfehler zurück
+            }
+
+            // Hole den Sector basierend auf dem SectorId
+            var sector = await _context.Sectors.FindAsync(company.SectorId);
+            if (sector == null)
+            {
+                return BadRequest("Ungültiger SectorId.");
+            }
+
+            // Company hinzufügen und speichern
             _context.Companies.Add(company);
             await _context.SaveChangesAsync();
 
@@ -49,11 +62,18 @@ namespace RegistrationApi.Controllers
 
         // PUT: api/company/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCompany(int id, Company company)
+        public async Task<IActionResult> PutCompany(int id, [FromBody] Company company)
         {
             if (id != company.CompanyId)
             {
                 return BadRequest();
+            }
+
+            // Sicherstellen, dass der angegebene Sector existiert
+            var sector = await _context.Sectors.FindAsync(company.SectorId);
+            if (sector == null)
+            {
+                return BadRequest("Ungültiger SectorId.");
             }
 
             _context.Entry(company).State = EntityState.Modified;

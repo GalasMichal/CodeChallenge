@@ -4,8 +4,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using RegistrationApi.Data; // Namespace für AppDbContext
-using RegistrationApi.Models; // Namespace für Models
+using RegistrationApi.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,30 @@ builder.Services.AddCors(options =>
         });
 });
 
+// Konfiguriere JWT-Authentifizierung
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var key = builder.Configuration["Jwt:Key"];
+        if (string.IsNullOrEmpty(key))
+        {
+            throw new InvalidOperationException("Der JWT-Schlüssel ist nicht konfiguriert.");
+        }
+
+        var keyBytes = Encoding.UTF8.GetBytes(key);
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"], // Richtiger Wert hier
+            IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
+        };
+    });
+
 // Konfiguriere Swagger für API-Dokumentation
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -41,12 +67,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
 // Wende CORS-Policy an
 app.UseCors("AllowMyOrigins");
 
+// Füge Authentifizierung hinzu
+app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers(); // Registriere API-Controller
 
 app.Run();

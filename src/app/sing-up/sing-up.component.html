@@ -1,122 +1,130 @@
 <mat-card class="sing-up-card" appearance="outlined">
-  <mat-card-title> Sing up</mat-card-title>
+  <mat-card-title>Sign Up</mat-card-title>
   <mat-stepper class="example-stepper" [orientation]="(stepperOrientation$ | async)!">
-    <mat-step [stepControl]="firstFormGroup" label="Fill data about your company">
-      <form [formGroup]="firstFormGroup">
+
+    <mat-step label="Fill data about your company">
+      <form (ngSubmit)="onFirstFormSubmit(companyForm)" #companyForm="ngForm">
         <div class="name-container">
           <mat-form-field class="w400" appearance="outline">
             <mat-label>Organization Name</mat-label>
-            <input matInput formControlName="firstCtrl" required>
+            <input matInput #name="ngModel" [(ngModel)]="company.name" name="companyName" type="text" name="name" id="name" required>
+            @if (!name.valid && name.touched ) {
+
+            }
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Choose Sector</mat-label>
-            <mat-select>
-              <mat-option value="one">First option</mat-option>
-              <mat-option value="two">Second option</mat-option>
+            <mat-select [(ngModel)]="company.sectorId" name="companySector" #name="ngModel" required>
+              @for (sector of sectors; track $index) {
+              <mat-option [value]="sector.sectorId">
+                {{ sector.bezeichnung }}
+              </mat-option>
+            }
             </mat-select>
           </mat-form-field>
         </div>
         <div>
-          <button mat-raised-button matStepperNext>Next</button>
+          <button mat-raised-button matStepperNext [disabled]="!company.name || !company.sectorId" type="submit">Next</button>
         </div>
       </form>
     </mat-step>
 
-    <mat-step [stepControl]="secondFormGroup" label="Fill data about user">
-      <form [formGroup]="secondFormGroup">
+<!--
+    <mat-step label="Fill data about user">
+      <form (ngSubmit)="onSecondFormSubmit()">
         <div class="main-content-user">
           <div class="user-data">
             <mat-form-field appearance="outline">
               <mat-label>First Name</mat-label>
-              <input matInput formControlName="secondCtrl" required>
+              <input matInput [(ngModel)]="user.firstName" name="firstName" required>
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>Last Name</mat-label>
-              <input matInput formControlName="secondCtrl" required>
+              <input matInput [(ngModel)]="user.lastName" name="lastName" required>
             </mat-form-field>
           </div>
           <mat-form-field appearance="outline">
             <mat-label>User Name</mat-label>
-            <input matInput formControlName="secondCtrl" required>
+            <input matInput [(ngModel)]="user.userName" name="userName" required>
           </mat-form-field>
           <div class="user-data">
             <mat-form-field appearance="outline">
               <mat-label>Password</mat-label>
-              <input matInput formControlName="secondCtrl" required>
+              <input matInput [(ngModel)]="user.password" name="password" type="password" required>
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>Confirm Password</mat-label>
-              <input matInput formControlName="secondCtrl" required>
+              <input matInput [(ngModel)]="user.confirmPassword" name="confirmPassword" type="password" required>
             </mat-form-field>
           </div>
           <mat-form-field appearance="outline">
             <mat-label>E-mail</mat-label>
-            <input matInput formControlName="secondCtrl">
+            <input matInput [(ngModel)]="user.email" name="email">
           </mat-form-field>
         </div>
         <div>
           <button mat-button matStepperPrevious>Back</button>
-          <button mat-button matStepperNext>Next</button>
+          <button mat-raised-button matStepperNext type="submit">Next</button>
         </div>
       </form>
     </mat-step>
-    <mat-step [stepControl]="thirdFormGroup" label="Overview">
-      <form [formGroup]="thirdFormGroup">
 
-        <div class="main-content-user">
 
-          <div class="name-container">
-            <mat-form-field class="w400" appearance="outline">
-              <mat-label>Organization Name</mat-label>
-              <input matInput disabled>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Choose Sector</mat-label>
-              <input matInput disabled>
-            </mat-form-field>
-          </div>
-
-          <div class="user-data">
-            <mat-form-field appearance="outline">
-              <mat-label>First Name</mat-label>
-              <input matInput disabled>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Last Name</mat-label>
-              <input matInput disabled>
-            </mat-form-field>
-          </div>
-          <mat-form-field appearance="outline">
-            <mat-label>User Name</mat-label>
-            <input matInput disabled>
+    <mat-step label="Overview">
+      <div class="main-content-user">
+        <div class="name-container">
+          <mat-form-field class="w400" appearance="outline">
+            <mat-label>Organization Name</mat-label>
+            <input matInput [value]="company.name" disabled>
           </mat-form-field>
-          <div class="user-data">
-            <mat-form-field appearance="outline">
-              <mat-label>Password</mat-label>
-              <input matInput disabled>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Confirm Password</mat-label>
-              <input matInput disabled>
-            </mat-form-field>
-          </div>
           <mat-form-field appearance="outline">
-            <mat-label>E-mail</mat-label>
-            <input matInput disabled> </mat-form-field>
+            <mat-label>Choose Sector</mat-label>
+            <input matInput [value]="getSectorName(company.sectorId)" disabled>
+          </mat-form-field>
         </div>
 
-        <div>
-          <button mat-button matStepperPrevious>Back</button>
-          <button mat-button matStepperNext>Next</button>
+        <div class="user-data">
+          <mat-form-field appearance="outline">
+            <mat-label>First Name</mat-label>
+            <input matInput [value]="user.firstName" disabled>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Last Name</mat-label>
+            <input matInput [value]="user.lastName" disabled>
+          </mat-form-field>
         </div>
-      </form>
+        <mat-form-field appearance="outline">
+          <mat-label>User Name</mat-label>
+          <input matInput [value]="user.userName" disabled>
+        </mat-form-field>
+        <div class="user-data">
+          <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input matInput [value]="user.password" type="password" disabled>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Confirm Password</mat-label>
+            <input matInput [value]="user.confirmPassword" type="password" disabled>
+          </mat-form-field>
+        </div>
+        <mat-form-field appearance="outline">
+          <mat-label>E-mail</mat-label>
+          <input matInput [value]="user.email" disabled>
+        </mat-form-field>
+      </div>
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-raised-button type="submit">Finish</button>
+      </div>
     </mat-step>
+
+
     <mat-step>
       <ng-template matStepLabel>Done</ng-template>
       <p>You are now done.</p>
       <div>
         <button mat-button matStepperPrevious>Back</button>
       </div>
-    </mat-step>
+    </mat-step> -->
   </mat-stepper>
 </mat-card>

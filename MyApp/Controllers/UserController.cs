@@ -1,7 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using RegistrationApi.Data;
 using RegistrationApi.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace RegistrationApi.Controllers
 {
@@ -10,42 +15,26 @@ namespace RegistrationApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public UserController(AppDbContext context)
+        public UserController(AppDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
-        // GET: api/user
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
-        {
-            return await _context.Users.Include(u => u.Company).ToListAsync();
-        }
-
-        // GET: api/user/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
-        {
-            var user = await _context.Users.Include(u => u.Company).FirstOrDefaultAsync(u => u.Id == id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return user;
-        }
-
-        // POST: api/user
-        [HttpPost]
+        // POST: api/user/register
+        [HttpPost("register")]
         public async Task<IActionResult> RegisterUser(User user)
         {
-            // Überprüfen, ob der Benutzername bereits vorhanden ist
+            // Validierung des Benutzernamens
             if (await _context.Users.AnyAsync(u => u.Username == user.Username))
             {
                 return BadRequest("Username already exists.");
             }
+
+            // Setze PasswordConfirmation auf null oder entferne sie
+            // user.PasswordConfirmation = null; // Fehlerbehebung hier
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -53,50 +42,35 @@ namespace RegistrationApi.Controllers
             return Ok(user);
         }
 
-        // PUT: api/user/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        // POST: api/user/login
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(UserLoginDto userLogin)
         {
-            if (id != user.Id)
-            {
-                return BadRequest();
-            }
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Username == userLogin.Username && u.Password == userLogin.Password);
 
-            _context.Entry(user).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // DELETE: api/user/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
-        {
-            var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
-                return NotFound();
+                return Unauthorized("Invalid username or password.");
             }
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is not configured"));
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, user.Username)
+                }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                Issuer = _configuration["Jwt:Issuer"],
+                Audience = _configuration["Jwt:Audience"],
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
 
-            return NoContent();
+            return Ok(new { Token = tokenString });
         }
 
         private bool UserExists(int id)

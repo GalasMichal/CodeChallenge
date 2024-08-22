@@ -136,3 +136,4 @@ C:\Users\Family\Desktop\programmieren\CodeChallenge\MyApp\MyApp\obj\Debug\net8.0
 C:\Users\Family\Desktop\programmieren\CodeChallenge\MyApp\MyApp\obj\Debug\net8.0\MyApp.pdb
 C:\Users\Family\Desktop\programmieren\CodeChallenge\MyApp\MyApp\obj\Debug\net8.0\MyApp.genruntimeconfig.cache
 C:\Users\Family\Desktop\programmieren\CodeChallenge\MyApp\MyApp\obj\Debug\net8.0\ref\MyApp.dll
+C:\Users\Family\Desktop\programmieren\CodeChallenge\MyApp\MyApp\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

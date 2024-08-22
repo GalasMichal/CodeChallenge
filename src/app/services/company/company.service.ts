@@ -6,7 +6,7 @@ import { Company } from '../../models/company.model';
 @Injectable({
   providedIn: 'root'
 })
-export class CompanyServiceService {
+export class CompanyService {
   private http = inject(HttpClient)
   private apiUrl = 'http://localhost:5248/api/company';
 
@@ -16,8 +16,8 @@ export class CompanyServiceService {
     return this.http.get<Company[]>(this.apiUrl);
   }
 
-  getCompanyById(id: number): Observable<Company> {
-    return this.http.get<Company>(`${this.apiUrl}/${id}`);
+  getCompanyById(Id: number): Observable<Company> {
+    return this.http.get<Company>(`${this.apiUrl}/${Id}`);
   }
 
   addCompany(company: Company): Observable<Company> {
@@ -25,10 +25,10 @@ export class CompanyServiceService {
   }
 
   updateCompany(company: Company): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${company.Id}`, company);
+    return this.http.put<void>(`${this.apiUrl}/${company.companyId}`, company);
   }
 
-  deleteCompany(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  deleteCompany(Id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${Id}`);
   }
 }

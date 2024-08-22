@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RegistrationApi.Data;
+using RegistrationApi.Models;
 
-namespace RegistrationApi.Models
+
+namespace RegistrationApi.Controllers
 {
-  [Route("api/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class SectorController : ControllerBase
     {
