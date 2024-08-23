@@ -108,7 +108,7 @@ export class SingUpComponent {
     }
 
     onSecondFormSubmit(){
-
+      console.log('userData', this.user)
     }
 
 
