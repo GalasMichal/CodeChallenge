@@ -63,6 +63,8 @@ export class SingUpComponent {
   sectors: Sector[] = [];
   usernameExists: boolean | null = null;
   checking: boolean = false;
+  checkingCompany: boolean = false;
+  companyExists: boolean = false;
 
   protected readonly value = signal('');
 
@@ -76,6 +78,7 @@ export class SingUpComponent {
   stepperOrientation$!: Observable<StepperOrientation>;
 
   ngOnInit(): void {
+    this.company.companyId = 1;
     // Initialisieren der `stepperOrientation$` Observable
     this.stepperOrientation$ = this.breakpointObserver
       .observe('(min-width: 800px)')
@@ -110,8 +113,23 @@ export class SingUpComponent {
   });
   }
 
-  onFirstFormSubmit(ngForm: NgForm): void {
+  checkCompany(name: string): void {
+    this.checkingCompany = true;
+    this.companyService.checkCompanyExists(name).subscribe({
+      next: (exists) => {
+        this.companyExists = exists;
+        this.checkingCompany = false;
+      },
+      error: (error) => {
+        console.error('Error checking company existence', error);
+        this.checkingCompany = false;
+      }
+    });
+  }
+
+  onFirstFormSubmit(companyForm: NgForm): void {
       console.log('Gespeicherte Daten:', this.company);
+      if(companyForm.valid && !this.companyExists) {
       this.companyService.addCompany(this.company).subscribe({
         next: (response) => {
           console.log('Firma erfolgreich hinzugefügt:', response);
@@ -121,13 +139,30 @@ export class SingUpComponent {
         },
         complete: () => console.info('send post complete'),
       });
+    }
 
     }
 
-    onSecondFormSubmit(){
-      console.log('userData', this.user)
-    }
 
+
+    onSecondFormSubmit(userForm: NgForm): void {
+      if (userForm.valid && !this.usernameExists) {
+        console.log('userData', this.user);
+        this.userService.addUser(this.user).subscribe({
+          next: (response) => {
+            console.log('User erfolgreich hinzugefügt', response);
+          },
+          error: (error) => {
+            console.error('Fehler beim hinzufügen den User', error)
+          },
+          complete: () => {
+            console.info('send userData complete')
+          },
+      })
+      } else {
+        console.log('Form is not valid or username already exists');
+      }
+    }
 
   }
 

@@ -31,7 +31,7 @@
 
 
     <mat-step label="Fill data about user">
-      <form (ngSubmit)="onSecondFormSubmit()">
+      <form (ngSubmit)="onSecondFormSubmit(userForm)" #userForm="ngForm">
         <div class="main-content-user">
           <div class="user-data">
             <mat-form-field appearance="outline">
@@ -46,6 +46,15 @@
           <mat-form-field appearance="outline">
             <mat-label>User Name</mat-label>
             <input matInput [(ngModel)]="user.userName" #name="ngModel" name="userName" (ngModelChange)="checkUsername($event)" required>
+            <mat-error *ngIf="name.touched && name.invalid">
+              Username is required.
+            </mat-error>
+            <mat-error *ngIf="usernameExists && !checking">
+              Username already exists!
+            </mat-error>
+            <mat-error *ngIf="checking">
+              Checking username...
+            </mat-error>
           </mat-form-field>
           <div class="user-data">
             <mat-form-field appearance="outline">

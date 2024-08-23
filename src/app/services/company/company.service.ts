@@ -16,6 +16,10 @@ export class CompanyService {
     return this.http.get<Company[]>(this.apiUrl);
   }
 
+  checkCompanyExists(name: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/exists/${name}`);
+  }
+
   getCompanyById(Id: number): Observable<Company> {
     return this.http.get<Company>(`${this.apiUrl}/${Id}`);
   }

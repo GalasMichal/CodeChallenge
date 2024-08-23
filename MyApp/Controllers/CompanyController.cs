@@ -60,6 +60,13 @@ namespace RegistrationApi.Controllers
             return CreatedAtAction(nameof(GetCompany), new { id = company.CompanyId }, company);
         }
 
+         [HttpGet("exists/{name}")]
+        public async Task<IActionResult> CheckCompanyExists(string name)
+        {
+            bool exists = await _context.Companies.AnyAsync(c => c.Name == name);
+            return Ok(exists);
+        }
+
         // PUT: api/company/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCompany(int id, [FromBody] Company company)
