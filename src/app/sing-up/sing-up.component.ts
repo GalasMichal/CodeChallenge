@@ -27,6 +27,7 @@ import { Sector } from '../models/sector.model';
 import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { SectorService } from '../services/sector/sector.service';
 import { CompanyService } from '../services/company/company.service';
+import { User } from '../models/user.model';
 
 @Component({
   selector: 'app-sing-up',
@@ -64,6 +65,7 @@ export class SingUpComponent {
   }
 
   company: Company = new Company('', 0);
+  user: User = new User(this.company.companyId);
 
   sectors: Sector[] = [];
 
@@ -92,16 +94,10 @@ export class SingUpComponent {
   }
 
   onFirstFormSubmit(ngForm: NgForm): void {
-    console.log('onFirstFormSubmit() Methode aufgerufen');
-
       console.log('Gespeicherte Daten:', this.company);
-
-      // Rufe die Methode des Services auf, um die Daten zu speichern
       this.companyService.addCompany(this.company).subscribe({
         next: (response) => {
           console.log('Firma erfolgreich hinzugefügt:', response);
-          // Formular zurücksetzen nach erfolgreicher Übermittlung
-
         },
         error: (error) => {
           console.error('Fehler beim Hinzufügen der Firma:', error);
@@ -110,5 +106,11 @@ export class SingUpComponent {
       });
 
     }
+
+    onSecondFormSubmit(){
+
+    }
+
+
   }
 

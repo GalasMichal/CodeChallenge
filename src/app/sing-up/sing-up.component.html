@@ -2,7 +2,7 @@
   <mat-card-title>Sign Up</mat-card-title>
   <mat-stepper class="example-stepper" [orientation]="(stepperOrientation$ | async)!">
 
-    <mat-step label="Fill data about your company">
+    <!-- <mat-step label="Fill data about your company">
       <form (ngSubmit)="onFirstFormSubmit(companyForm)" #companyForm="ngForm">
         <div class="name-container">
           <mat-form-field class="w400" appearance="outline">
@@ -27,9 +27,9 @@
           <button mat-raised-button matStepperNext [disabled]="!company.name || !company.sectorId" type="submit">Next</button>
         </div>
       </form>
-    </mat-step>
+    </mat-step> -->
 
-<!--
+
     <mat-step label="Fill data about user">
       <form (ngSubmit)="onSecondFormSubmit()">
         <div class="main-content-user">
@@ -79,7 +79,7 @@
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Choose Sector</mat-label>
-            <input matInput [value]="getSectorName(company.sectorId)" disabled>
+            <input matInput  disabled>
           </mat-form-field>
         </div>
 
@@ -125,6 +125,6 @@
       <div>
         <button mat-button matStepperPrevious>Back</button>
       </div>
-    </mat-step> -->
+    </mat-step>
   </mat-stepper>
 </mat-card>

@@ -1,4 +1,4 @@
-export interface User {
+export class User {
   id?: number;
   firstName: string;
   lastName: string;
@@ -7,4 +7,14 @@ export interface User {
   confirmPassword: string;
   email?: string;
   companyId?: number;
+
+  constructor(companyId?: number) {
+    this.companyId = companyId; 
+    this.firstName = '';
+    this.lastName = '';
+    this.userName = '';
+    this.password = '';
+    this.confirmPassword = '';
+    this.email = '';
+  }
 }
