@@ -8,13 +8,21 @@ export class User {
   email?: string;
   companyId?: number;
 
-  constructor(companyId?: number) {
-    this.companyId = companyId; 
-    this.firstName = '';
-    this.lastName = '';
-    this.userName = '';
-    this.password = '';
-    this.confirmPassword = '';
-    this.email = '';
+  constructor(
+    firstName: string = '',
+    lastName: string = '',
+    userName: string = '',
+    password: string = '',
+    confirmPassword: string = '',
+    email?: string,
+    companyId?: number
+  ) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.userName = userName;
+    this.password = password;
+    this.confirmPassword = confirmPassword;
+    this.email = email;
+    this.companyId = companyId;
   }
 }

@@ -57,17 +57,20 @@ export class SingUpComponent {
   private userService = inject(UserService);
   private companyService = inject(CompanyService);
 
-  // Wert-Signal für Eingaben
+
+  company: Company = new Company('', 0);
+  user: User = new User('', '', '', '', '', '', this.company.companyId);
+  sectors: Sector[] = [];
+  usernameExists: boolean | null = null;
+  checking: boolean = false;
+
   protected readonly value = signal('');
 
   protected onInput(event: Event) {
     this.value.set((event.target as HTMLInputElement).value);
   }
 
-  company: Company = new Company('', 0);
-  user: User = new User(this.company.companyId);
 
-  sectors: Sector[] = [];
 
 
   stepperOrientation$!: Observable<StepperOrientation>;
@@ -91,6 +94,20 @@ export class SingUpComponent {
         console.error('Fehler beim Laden der Sektoren:', err.message); // Fehlerbehandlung
       }
     );
+  }
+
+  checkUsername(username: string): void {
+    this.checking = true;
+    this.userService.checkUsernameExists(username).subscribe({
+      next: (exists) => {
+        this.usernameExists = exists;
+        this.checking = false;
+      },
+      error: (error) => {
+        console.error('Error checking username existence', error);
+        this.checking = false;
+      }
+  });
   }
 
   onFirstFormSubmit(ngForm: NgForm): void {

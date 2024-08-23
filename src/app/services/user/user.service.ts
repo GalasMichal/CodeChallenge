@@ -16,6 +16,10 @@ export class UserService {
     return this.http.get<User[]>(this.apiUrl);
   }
 
+  checkUsernameExists(username: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/exists/${username}`);
+  }
+
   getUserById(Id: number): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/${Id}`);
   }

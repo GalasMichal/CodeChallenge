@@ -45,7 +45,7 @@
           </div>
           <mat-form-field appearance="outline">
             <mat-label>User Name</mat-label>
-            <input matInput [(ngModel)]="user.userName" name="userName" required>
+            <input matInput [(ngModel)]="user.userName" #name="ngModel" name="userName" (ngModelChange)="checkUsername($event)" required>
           </mat-form-field>
           <div class="user-data">
             <mat-form-field appearance="outline">
