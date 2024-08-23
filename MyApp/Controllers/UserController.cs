@@ -42,6 +42,12 @@ namespace RegistrationApi.Controllers
       return Ok(user);
     }
 
+    [HttpGet("test")]
+    public IActionResult Test()
+    {
+      return Ok("Controller is working");
+    }
+
     [HttpGet("exists/{username}")]
     public async Task<IActionResult> CheckUsernameExists(string username)
     {

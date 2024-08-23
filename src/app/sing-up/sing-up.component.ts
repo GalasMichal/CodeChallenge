@@ -1,5 +1,10 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -44,19 +49,16 @@ import { User } from '../models/user.model';
     MatCardModule,
     MatSelectModule,
     HttpClientModule,
-
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './sing-up.component.html',
   styleUrls: ['./sing-up.component.scss'],
 })
 export class SingUpComponent {
-
   private sectorsService = inject(SectorService);
   private breakpointObserver = inject(BreakpointObserver);
   private userService = inject(UserService);
   private companyService = inject(CompanyService);
-
 
   company: Company = new Company('', 0);
   user: User = new User('', '', '', '', '', '', this.company.companyId);
@@ -65,6 +67,7 @@ export class SingUpComponent {
   checking: boolean = false;
   checkingCompany: boolean = false;
   companyExists: boolean = false;
+  selectedSectorName: string = '';
 
   protected readonly value = signal('');
 
@@ -72,13 +75,9 @@ export class SingUpComponent {
     this.value.set((event.target as HTMLInputElement).value);
   }
 
-
-
-
   stepperOrientation$!: Observable<StepperOrientation>;
 
   ngOnInit(): void {
-    this.company.companyId = 1;
     // Initialisieren der `stepperOrientation$` Observable
     this.stepperOrientation$ = this.breakpointObserver
       .observe('(min-width: 800px)')
@@ -109,8 +108,8 @@ export class SingUpComponent {
       error: (error) => {
         console.error('Error checking username existence', error);
         this.checking = false;
-      }
-  });
+      },
+    });
   }
 
   checkCompany(name: string): void {
@@ -123,16 +122,27 @@ export class SingUpComponent {
       error: (error) => {
         console.error('Error checking company existence', error);
         this.checkingCompany = false;
-      }
+      },
     });
   }
 
+  onSectorChange(sectorId: number): void {
+    const selectedSector = this.sectors.find(
+      (sector) => sector.sectorId === sectorId
+    );
+    this.selectedSectorName = selectedSector ? selectedSector.bezeichnung : '';
+  }
+
   onFirstFormSubmit(companyForm: NgForm): void {
-      console.log('Gespeicherte Daten:', this.company);
-      if(companyForm.valid && !this.companyExists) {
+    if (companyForm.valid && !this.companyExists) {
       this.companyService.addCompany(this.company).subscribe({
-        next: (response) => {
+        next: (response: Company) => {
           console.log('Firma erfolgreich hinzugefügt:', response);
+
+          // Die Company-ID aus der Antwort holen und im User-Objekt speichern
+          this.user.companyId = response.companyId;
+
+          console.log('Updated User with companyId:', this.user);
         },
         error: (error) => {
           console.error('Fehler beim Hinzufügen der Firma:', error);
@@ -140,29 +150,31 @@ export class SingUpComponent {
         complete: () => console.info('send post complete'),
       });
     }
-
-    }
-
-
-
-    onSecondFormSubmit(userForm: NgForm): void {
-      if (userForm.valid && !this.usernameExists) {
-        console.log('userData', this.user);
-        this.userService.addUser(this.user).subscribe({
-          next: (response) => {
-            console.log('User erfolgreich hinzugefügt', response);
-          },
-          error: (error) => {
-            console.error('Fehler beim hinzufügen den User', error)
-          },
-          complete: () => {
-            console.info('send userData complete')
-          },
-      })
-      } else {
-        console.log('Form is not valid or username already exists');
-      }
-    }
-
   }
 
+  onSecondFormSubmit(userForm: NgForm): void {
+    if (userForm.valid && !this.usernameExists) {
+      console.log('userData', this.user);
+
+      // Überprüfe, ob die companyId gesetzt ist
+      if (!this.user.companyId) {
+        console.error('Company ID is missing!');
+        return;
+      }
+
+      this.userService.addUser(this.user).subscribe({
+        next: (response) => {
+          console.log('User erfolgreich hinzugefügt', response);
+        },
+        error: (error) => {
+          console.error('Fehler beim Hinzufügen des Users', error);
+        },
+        complete: () => {
+          console.info('User-Daten erfolgreich gesendet');
+        },
+      });
+    } else {
+      console.log('Form is not valid or username already exists');
+    }
+  }
+}

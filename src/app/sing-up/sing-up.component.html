@@ -1,33 +1,44 @@
 <mat-card class="sing-up-card" appearance="outlined">
   <mat-card-title>Sign Up</mat-card-title>
-  <mat-stepper class="example-stepper" [orientation]="(stepperOrientation$ | async)!">
+  <mat-stepper [orientation]="(stepperOrientation$ | async)!">
 
-    <!-- <mat-step label="Fill data about your company">
+    <mat-step label="Fill data about your company">
       <form (ngSubmit)="onFirstFormSubmit(companyForm)" #companyForm="ngForm">
         <div class="name-container">
           <mat-form-field class="w400" appearance="outline">
             <mat-label>Organization Name</mat-label>
-            <input matInput #name="ngModel" [(ngModel)]="company.name" name="companyName" type="text" name="name" id="name" required>
-            @if (!name.valid && name.touched ) {
-
+            <input matInput #name="ngModel" (ngModelChange)="checkCompany($event)" [(ngModel)]="company.name" name="companyName" type="text" name="name" required>
+            @if (companyExists && !checkingCompany) {
+              <mat-error>
+                Company name already exists! Please choose another name.
+              </mat-error>
+            }
+            @if (checkingCompany){
+              Checking company name...
             }
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Choose Sector</mat-label>
-            <mat-select [(ngModel)]="company.sectorId" name="companySector" #name="ngModel" required>
+            <mat-select [(ngModel)]="company.sectorId" name="companySector" #name="ngModel" required (selectionChange)="onSectorChange($event.value)">
               @for (sector of sectors; track $index) {
               <mat-option [value]="sector.sectorId">
                 {{ sector.bezeichnung }}
               </mat-option>
             }
             </mat-select>
+            @if (!name.valid && name.touched) {
+              <mat-error>
+                Sector selection is required.
+              </mat-error>
+            }
+
           </mat-form-field>
         </div>
         <div>
-          <button mat-raised-button matStepperNext [disabled]="!company.name || !company.sectorId" type="submit">Next</button>
+          <button mat-raised-button matStepperNext [disabled]="!companyForm.valid || companyExists" type="submit">Next</button>
         </div>
       </form>
-    </mat-step> -->
+    </mat-step>
 
 
     <mat-step label="Fill data about user">
@@ -37,10 +48,18 @@
             <mat-form-field appearance="outline">
               <mat-label>First Name</mat-label>
               <input matInput [(ngModel)]="user.firstName" name="firstName" required>
+              @if (name.invalid && name.touched) {
+                <mat-error>
+                  First name is required.
+                </mat-error>
+              }
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>Last Name</mat-label>
               <input matInput [(ngModel)]="user.lastName" name="lastName" required>
+              @if(name.invalid && name.touched){
+                Last name is required.
+              }
             </mat-form-field>
           </div>
           <mat-form-field appearance="outline">
@@ -87,8 +106,8 @@
             <input matInput [value]="company.name" disabled>
           </mat-form-field>
           <mat-form-field appearance="outline">
-            <mat-label>Choose Sector</mat-label>
-            <input matInput  disabled>
+            <mat-label> Sector</mat-label>
+            <input matInput [value]="selectedSectorName" disabled>
           </mat-form-field>
         </div>
 
