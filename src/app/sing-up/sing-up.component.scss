@@ -1,7 +1,9 @@
-.sing-up-card{
+.sing-up-card {
+  position: relative;
   min-height: 500px;
   height: 100%;
-  mat-card-title{
+
+  mat-card-title {
     font-size: 44px;
     text-align: center;
     margin-top: 5%;
@@ -9,17 +11,55 @@
   }
 }
 
-.name-container{
+.input-with-btn {
+  display: flex;
+}
+
+.btn-next{
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 5%;
+    padding-right: 5%;
+}
+
+
+.mat-mdc-form-field {
+  position: relative !important;
+}
+
+.error-container-sector {
+  height: 10px;
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  bottom: 30%;
+}
+
+.error-container {
+  height: 10px;
+  width: 100%;
+  position: absolute !important;
+  text-align: center;
+  bottom: -11% !important;
+  font-size: 12px;
+}
+
+.error-message-red {
+  border-color: red !important;
+  color: red !important;
+}
+
+.name-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 5%;
   margin-top: 5%;
+  gap: 5px;
   flex-direction: column;
- 
+
 }
 
-.main-content-user{
+.main-content-user {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -27,7 +67,7 @@
   width: 100%;
 }
 
-.user-data{
+.user-data {
   display: flex;
   gap: 5px;
 }

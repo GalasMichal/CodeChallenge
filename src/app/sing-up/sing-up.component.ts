@@ -4,6 +4,9 @@ import {
   Component,
   inject,
   signal,
+  effect,
+  ViewChild,
+  ElementRef,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -14,7 +17,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatError, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import {
   StepperOrientation,
@@ -33,6 +36,7 @@ import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { SectorService } from '../services/sector/sector.service';
 import { CompanyService } from '../services/company/company.service';
 import { User } from '../models/user.model';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-sing-up',
@@ -49,6 +53,8 @@ import { User } from '../models/user.model';
     MatCardModule,
     MatSelectModule,
     HttpClientModule,
+    MatError,
+    MatIconModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './sing-up.component.html',
@@ -65,8 +71,10 @@ export class SingUpComponent {
   sectors: Sector[] = [];
   usernameExists: boolean | null = null;
   checking: boolean = false;
-  checkingCompany: boolean = false;
-  companyExists: boolean = false;
+  checkingCompany = signal(false);
+  companyExists = signal(false);
+  companyNameSignal = signal('');
+  errorMessage = signal('');
   selectedSectorName: string = '';
 
   protected readonly value = signal('');
@@ -77,6 +85,20 @@ export class SingUpComponent {
 
   stepperOrientation$!: Observable<StepperOrientation>;
 
+
+  constructor() {
+    
+    effect(
+      () => {
+        // Effect überwacht nur das Lesen von Signalen
+        this.checkCompany(this.companyNameSignal());
+      },
+      { allowSignalWrites: true }
+    );
+  }
+
+
+
   ngOnInit(): void {
     // Initialisieren der `stepperOrientation$` Observable
     this.stepperOrientation$ = this.breakpointObserver
@@ -84,6 +106,8 @@ export class SingUpComponent {
       .pipe(map(({ matches }) => (matches ? 'horizontal' : 'vertical')));
 
     this.loadSectors(); // Lade die Sektoren bei Initialisierung der Komponente
+
+
   }
 
   loadSectors(): void {
@@ -113,15 +137,25 @@ export class SingUpComponent {
   }
 
   checkCompany(name: string): void {
-    this.checkingCompany = true;
+    if (!name) {
+      this.companyExists.set(false);
+      this.errorMessage.set('');
+      return;
+    }
+    this.checkingCompany.set(true);
+
     this.companyService.checkCompanyExists(name).subscribe({
       next: (exists) => {
-        this.companyExists = exists;
-        this.checkingCompany = false;
+        this.companyExists.set(exists);
+        this.errorMessage.set(exists ? 'Company name already exists! Please choose another name.' : '');
+        console.log('Company exists:', this.companyExists());
+        this.checkingCompany.set(false);
       },
       error: (error) => {
         console.error('Error checking company existence', error);
-        this.checkingCompany = false;
+        this.companyExists.set(false);
+        this.errorMessage.set('An error occurred while checking the company name.');
+        this.checkingCompany.set(false);
       },
     });
   }

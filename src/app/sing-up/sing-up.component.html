@@ -5,37 +5,49 @@
     <mat-step label="Fill data about your company">
       <form (ngSubmit)="onFirstFormSubmit(companyForm)" #companyForm="ngForm">
         <div class="name-container">
-          <mat-form-field class="w400" appearance="outline">
+
+          <mat-form-field class="w400" [ngClass]="{'error-message-red': companyExists()}" appearance="outline">
             <mat-label>Organization Name</mat-label>
-            <input matInput #name="ngModel" (ngModelChange)="checkCompany($event)" [(ngModel)]="company.name" name="companyName" type="text" name="name" required>
-            @if (companyExists && !checkingCompany) {
-              <mat-error>
-                Company name already exists! Please choose another name.
-              </mat-error>
-            }
-            @if (checkingCompany){
-              Checking company name...
-            }
+            <div class="input-with-btn">
+
+              <input matInput (ngModelChange)="companyNameSignal.set($event)" #companyName="ngModel" [(ngModel)]="company.name"
+                name="companyName" type="text" minlength="2" maxlength="30" pattern="^[a-zA-ZäöüÄÖÜß\\s-]+$"
+                pattern="^(?!.*(Test|Admin|Firma)).*$" required>
+            </div>
+            <div class="error-container">
+              @if (companyExists()) {
+             <div class="error-message-red"> {{errorMessage()}} </div>
+             }
+             @else if (!companyName.valid && companyName.touched) {
+              <div class="error-message-red"> Please enter name of your company</div>
+             }
+           </div>
           </mat-form-field>
-          <mat-form-field appearance="outline">
+
+          <mat-form-field class="w400" appearance="outline">
             <mat-label>Choose Sector</mat-label>
-            <mat-select [(ngModel)]="company.sectorId" name="companySector" #name="ngModel" required (selectionChange)="onSectorChange($event.value)">
+            <mat-select [(ngModel)]="company.sectorId" name="companySector" #companySector="ngModel" required
+              (selectionChange)="onSectorChange($event.value)">
               @for (sector of sectors; track $index) {
               <mat-option [value]="sector.sectorId">
                 {{ sector.bezeichnung }}
               </mat-option>
-            }
+              }
+
             </mat-select>
-            @if (!name.valid && name.touched) {
-              <mat-error>
-                Sector selection is required.
-              </mat-error>
-            }
+
 
           </mat-form-field>
+          <div class="error-container-sector"> @if (!company.sectorId && companySector.touched) {
+            <div class="error-message-red">
+              Sector selection is required.
+            </div>
+            }
+          </div>
         </div>
-        <div>
-          <button mat-raised-button matStepperNext [disabled]="!companyForm.valid || companyExists" type="submit">Next</button>
+        <div class="btn-next">
+          <button mat-raised-button matStepperNext [disabled]="!companyForm.valid || companyExists() || !company.sectorId"
+            type="submit">Next</button>
         </div>
       </form>
     </mat-step>
@@ -49,22 +61,23 @@
               <mat-label>First Name</mat-label>
               <input matInput [(ngModel)]="user.firstName" name="firstName" required>
               @if (name.invalid && name.touched) {
-                <mat-error>
-                  First name is required.
-                </mat-error>
+              <mat-error>
+                First name is required.
+              </mat-error>
               }
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>Last Name</mat-label>
               <input matInput [(ngModel)]="user.lastName" name="lastName" required>
               @if(name.invalid && name.touched){
-                Last name is required.
+              Last name is required.
               }
             </mat-form-field>
           </div>
           <mat-form-field appearance="outline">
             <mat-label>User Name</mat-label>
-            <input matInput [(ngModel)]="user.userName" #name="ngModel" name="userName" (ngModelChange)="checkUsername($event)" required>
+            <input matInput [(ngModel)]="user.userName" #name="ngModel" name="userName"
+              (ngModelChange)="checkUsername($event)" required>
             <mat-error *ngIf="name.touched && name.invalid">
               Username is required.
             </mat-error>
