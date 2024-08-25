@@ -33,9 +33,6 @@ namespace RegistrationApi.Controllers
         return BadRequest("Username already exists.");
       }
 
-      // Setze PasswordConfirmation auf null oder entferne sie
-      // user.PasswordConfirmation = null; // Fehlerbehebung hier
-
       _context.Users.Add(user);
       await _context.SaveChangesAsync();
 

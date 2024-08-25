@@ -1,8 +1,8 @@
 <mat-card class="sing-up-card" appearance="outlined">
   <mat-card-title>Sign Up</mat-card-title>
-  <mat-stepper [orientation]="(stepperOrientation$ | async)!">
+  <mat-stepper class="bg-gradient" [orientation]="(stepperOrientation$ | async)!">
 
-    <!-- <mat-step label="Fill data about your company">
+    <mat-step label="Fill data about your company">
       <form (ngSubmit)="onFirstFormSubmit(companyForm)" #companyForm="ngForm">
         <div class="name-container">
 
@@ -10,18 +10,18 @@
             <mat-label>Organization Name</mat-label>
             <div class="input-with-btn">
 
-              <input matInput (ngModelChange)="companyNameSignal.set($event)" #companyName="ngModel" [(ngModel)]="company.name"
-                name="companyName" type="text" minlength="2" maxlength="30" pattern="^[a-zA-ZäöüÄÖÜß\\s-]+$"
-                pattern="^(?!.*(Test|Admin|Firma)).*$" required>
+              <input matInput (ngModelChange)="companyNameSignal.set($event)" #companyName="ngModel"
+                [(ngModel)]="company.name" name="companyName" type="text" minlength="2" maxlength="30"
+                pattern="^[a-zA-ZäöüÄÖÜß\\s-]+$" pattern="^(?!.*(Test|Admin|Firma)).*$" required>
             </div>
             <div class="error-container">
               @if (companyExists()) {
-             <div class="error-message-red"> {{errorMessage()}} </div>
-             }
-             @else if (!companyName.valid && companyName.touched) {
+              <div class="error-message-red"> {{errorMessage()}} </div>
+              }
+              @else if (!companyName.valid && companyName.touched) {
               <div class="error-message-red"> Please enter name of your company</div>
-             }
-           </div>
+              }
+            </div>
           </mat-form-field>
 
           <mat-form-field class="w400" appearance="outline">
@@ -46,15 +46,15 @@
           </div>
         </div>
         <div class="btn-next">
-          <button mat-raised-button matStepperNext [disabled]="!companyForm.valid || companyExists() || !company.sectorId"
-            type="submit">Next</button>
+          <button mat-raised-button matStepperNext
+            [disabled]="!companyForm.valid || companyExists() || !company.sectorId" type="submit">Next</button>
         </div>
       </form>
-    </mat-step> -->
+    </mat-step>
 
 
     <mat-step label="Fill data about user">
-      <form (ngSubmit)="onSecondFormSubmit(userForm)" #userForm="ngForm">
+      <form class="content-container" (ngSubmit)="onSecondFormSubmit(userForm)" #userForm="ngForm">
         <div class="main-content-user">
           <div class="user-data">
             <mat-form-field appearance="outline">
@@ -78,7 +78,7 @@
           </div>
           <mat-form-field class="full-width" appearance="outline">
             <mat-label>User Name</mat-label>
-            <input matInput [(ngModel)]="user.userName" #userName="ngModel" name="userName"
+            <input matInput [(ngModel)]="user.userName" autocomplete="new username" #userName="ngModel" name="userName"
               (ngModelChange)="usernameSignal.set($event)" required>
             @if (userName.touched && userName.invalid) {
             <mat-error>
@@ -94,8 +94,8 @@
 
           <mat-form-field class="full-width" appearance="outline">
             <mat-label>Password</mat-label>
-            <input matInput [(ngModel)]="user.password" name="password" [type]="hide() ? 'password' : 'text'" #password="ngModel"
-              minlength="8" required>
+            <input matInput [(ngModel)]="user.password" autocomplete="new-password"  name="password" [type]="hide() ? 'password' : 'text'"
+              #password="ngModel" minlength="8" required>
             <button mat-icon-button matSuffix (click)="clickEvent($event)" [attr.aria-label]="'Hide password'"
               [attr.aria-pressed]="hide()">
               <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
@@ -106,7 +106,7 @@
           </mat-form-field>
           <mat-form-field class="full-width" appearance="outline">
             <mat-label>Confirm Password</mat-label>
-            <input matInput [(ngModel)]="user.confirmPassword" #confirmPassword="ngModel" minlength="8"
+            <input matInput [(ngModel)]="user.confirmPassword" autocomplete="new-password" #confirmPassword="ngModel" minlength="8"
               name="confirmPassword" [type]="hide() ? 'password' : 'text'" [pattern]="user.password" required>
             <button mat-icon-button matSuffix (click)="clickEvent($event)" [attr.aria-label]="'Hide password'"
               [attr.aria-pressed]="hide()">
@@ -118,15 +118,27 @@
             </mat-error>
             }
           </mat-form-field>
-        </div>
-        <mat-form-field class="full-width" appearance="outline">
-          <mat-label>E-mail</mat-label>
-          <input matInput [(ngModel)]="user.email" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
-            name="email">
-        </mat-form-field>
-        <div class="chk-box-container">
-          <mat-checkbox class="example-margin">I agree to the <div (click)="openTerms()">Terms and Conditions</div></mat-checkbox>
-          <mat-checkbox class="example-margin">I agree to the <div (click)="openPrivacyPolicy()">Privacy Policy</div></mat-checkbox>
+
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>E-mail</mat-label>
+            <input matInput [(ngModel)]="user.email" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
+              name="email" type="email">
+          </mat-form-field>
+          <div class="chk-box-container full-width">
+            <div class="full-width chk-box-label"> <mat-checkbox name="checkboxStateTerms"
+                [(ngModel)]="checkboxStateTerms" required></mat-checkbox>
+              <div class="chk-box-label full-width">I agree to the <div class="chk-box-link" (click)="openTerms()">Terms
+                  and
+                  Conditions </div>
+              </div>
+            </div>
+            <div class="full-width chk-box-label"><mat-checkbox name="checkboxStatePrivacy"
+                [(ngModel)]="checkboxStatePrivacy" required></mat-checkbox>
+              <div class="chk-box-label full-width">I agree to the <div class="chk-box-link"
+                  (click)="openPrivacyPolicy()">Privacy Policy</div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="btn-container-user">
@@ -139,50 +151,54 @@
 
 
     <mat-step label="Overview">
-      <div class="main-content-user">
-        <div class="name-container">
-          <mat-form-field class="w400" appearance="outline">
-            <mat-label>Organization Name</mat-label>
-            <input matInput [value]="company.name" disabled>
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label> Sector</mat-label>
-            <input matInput [value]="selectedSectorName" disabled>
-          </mat-form-field>
-        </div>
+      <div class="content-container">
+        <h1 class="w400">Please review your information</h1>
+        <p class="w600">Make sure that all the details you have provided are correct. If everything looks good, click "Finish" to
+          proceed. If you need to make changes, click "Back" to correct your information.</p>
 
-        <div class="user-data">
-          <mat-form-field appearance="outline">
-            <mat-label>First Name</mat-label>
-            <input matInput [value]="user.firstName" disabled>
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Last Name</mat-label>
-            <input matInput [value]="user.lastName" disabled>
-          </mat-form-field>
+        <div class="main-content-user-overview">
+          <div class="w400">
+            <mat-form-field class="w400" appearance="outline">
+              <mat-label>Organization Name</mat-label>
+              <input matInput name="companyName" [value]="company.name" disabled>
+            </mat-form-field>
+            <mat-form-field class="w400" appearance="outline">
+              <mat-label> Sector</mat-label>
+              <input name="companySector" matInput [value]="selectedSectorName" disabled>
+            </mat-form-field>
+
+
+            <div>
+              <mat-form-field class="w400" appearance="outline">
+                <mat-label>First Name</mat-label>
+                <input name="firstName" matInput [value]="user.firstName" disabled>
+              </mat-form-field>
+              <mat-form-field class="w400" appearance="outline">
+                <mat-label>Last Name</mat-label>
+                <input name="lastName" matInput [value]="user.lastName" disabled>
+              </mat-form-field>
+            </div>
+            <mat-form-field class="w400" appearance="outline">
+              <mat-label>User Name</mat-label>
+              <input name="userName" matInput [value]="user.userName" disabled>
+            </mat-form-field>
+            <div class="user-data">
+              <mat-form-field class="w400" appearance="outline">
+                <mat-label>Password</mat-label>
+                <input matInput [value]="user.password" type="current-password" disabled>
+              </mat-form-field>
+
+            </div>
+            <mat-form-field class="w400" appearance="outline">
+              <mat-label>E-mail</mat-label>
+              <input matInput name="email" [value]="user.email" disabled>
+            </mat-form-field>
+          </div>
         </div>
-        <mat-form-field appearance="outline">
-          <mat-label>User Name</mat-label>
-          <input matInput [value]="user.userName" disabled>
-        </mat-form-field>
-        <div class="user-data">
-          <mat-form-field appearance="outline">
-            <mat-label>Password</mat-label>
-            <input matInput [value]="user.password" type="password" disabled>
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Confirm Password</mat-label>
-            <input matInput [value]="user.confirmPassword" type="password" disabled>
-          </mat-form-field>
+        <div class="btn-container-user">
+          <button mat-button matStepperPrevious>Back</button>
+          <button mat-raised-button type="submit">Finish</button>
         </div>
-        <mat-form-field appearance="outline">
-          <mat-label>E-mail</mat-label>
-          <input matInput [value]="user.email" disabled>
-        </mat-form-field>
-      </div>
-      <div>
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-raised-button type="submit">Finish</button>
       </div>
     </mat-step>
 

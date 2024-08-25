@@ -29,7 +29,7 @@ import { map } from 'rxjs/operators';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { UserService } from '../services/user/user.service';
-
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Company } from '../models/company.model';
 import { Sector } from '../models/sector.model';
 import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
@@ -60,7 +60,7 @@ import { PrivacyPolicyComponent } from '../privacy-policy/privacy-policy.compone
     MatIconModule,
     MatCheckboxModule,
     TermsComponent,
-    PrivacyPolicyComponent
+    PrivacyPolicyComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './sing-up.component.html',
@@ -71,6 +71,7 @@ export class SingUpComponent {
   private breakpointObserver = inject(BreakpointObserver);
   private userService = inject(UserService);
   private companyService = inject(CompanyService);
+  readonly dialog = inject(MatDialog);
 
   company: Company = new Company('', 0);
   user: User = new User('', '', '', '', '', '', this.company.companyId);
@@ -92,6 +93,11 @@ export class SingUpComponent {
 
   hide = signal(true);
   protected readonly value = signal('');
+
+  checkboxStatePrivacy = false;
+  checkboxStateTerms = false;
+
+
 
   protected onInput(event: Event) {
     this.value.set((event.target as HTMLInputElement).value);
@@ -122,6 +128,7 @@ export class SingUpComponent {
       .pipe(map(({ matches }) => (matches ? 'horizontal' : 'vertical')));
 
     this.loadSectors(); // Lade die Sektoren
+    console.log('checkbox1', this.checkboxStatePrivacy);
   }
 
   loadSectors(): void {
@@ -207,14 +214,11 @@ export class SingUpComponent {
   }
 
   onFirstFormSubmit(companyForm: NgForm): void {
-    if (companyForm.valid && !this.companyExists) {
+    if (companyForm.valid ) {
       this.companyService.addCompany(this.company).subscribe({
         next: (response: Company) => {
           console.log('Firma erfolgreich hinzugefügt:', response);
-
-          // Die Company-ID aus der Antwort holen und im User-Objekt speichern
           this.user.companyId = response.companyId;
-
           console.log('Updated User with companyId:', this.user);
         },
         error: (error) => {
@@ -226,7 +230,7 @@ export class SingUpComponent {
   }
 
   onSecondFormSubmit(userForm: NgForm): void {
-    if (userForm.valid && !this.usernameExists()) {
+    if (userForm.valid && !this.usernameExists() && this.allCheckboxesChecked()) {
       console.log('userData', this.user);
 
       if (!this.user.companyId) {
@@ -250,7 +254,14 @@ export class SingUpComponent {
     }
   }
 
-  openTerms(){}
-  openPrivacyPolicy(){}
-  
+  allCheckboxesChecked(): boolean {
+    return this.checkboxStateTerms && this.checkboxStatePrivacy;
+  }
+
+  openTerms() {
+    const dialogRef = this.dialog.open(TermsComponent);
+  }
+  openPrivacyPolicy() {
+    const dialogRef = this.dialog.open(PrivacyPolicyComponent);
+  }
 }

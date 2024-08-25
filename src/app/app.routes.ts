@@ -5,8 +5,8 @@ import { TermsComponent } from './terms/terms.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 
 export const routes: Routes = [
-  { path: 'singUp', component: LogInComponent },
-  { path: '', component: SingUpComponent },
+  { path: '', component: LogInComponent },
+  { path: 'signUp', component: SingUpComponent },
   { path: 'terms', component: TermsComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent}
 ];
