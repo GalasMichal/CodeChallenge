@@ -59,15 +59,28 @@
 
 }
 
+.chk-box-container{
+  display: flex;
+  flex-direction: column;
+}
+
 .main-content-user {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
+  margin-top: 5%;
 }
 
 .user-data {
   display: flex;
-  gap: 5px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.btn-container-user
+{
+  display: flex;
+  justify-content: space-between;
 }

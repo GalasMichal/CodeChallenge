@@ -2,7 +2,7 @@
   <mat-card-title>Sign Up</mat-card-title>
   <mat-stepper [orientation]="(stepperOrientation$ | async)!">
 
-    <mat-step label="Fill data about your company">
+    <!-- <mat-step label="Fill data about your company">
       <form (ngSubmit)="onFirstFormSubmit(companyForm)" #companyForm="ngForm">
         <div class="name-container">
 
@@ -50,7 +50,7 @@
             type="submit">Next</button>
         </div>
       </form>
-    </mat-step>
+    </mat-step> -->
 
 
     <mat-step label="Fill data about user">
@@ -59,8 +59,8 @@
           <div class="user-data">
             <mat-form-field appearance="outline">
               <mat-label>First Name</mat-label>
-              <input matInput [(ngModel)]="user.firstName" name="firstName" required>
-              @if (name.invalid && name.touched) {
+              <input matInput [(ngModel)]="user.firstName" name="firstName" #firstName="ngModel" required>
+              @if (firstName.invalid && firstName.touched) {
               <mat-error>
                 First name is required.
               </mat-error>
@@ -68,44 +68,71 @@
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>Last Name</mat-label>
-              <input matInput [(ngModel)]="user.lastName" name="lastName" required>
-              @if(name.invalid && name.touched){
-              Last name is required.
+              <input matInput [(ngModel)]="user.lastName" name="lastName" #lastName="ngModel" required>
+              @if(lastName.invalid && lastName.touched){
+              <mat-error>
+                Last name is required
+              </mat-error>
               }
             </mat-form-field>
           </div>
-          <mat-form-field appearance="outline">
+          <mat-form-field class="full-width" appearance="outline">
             <mat-label>User Name</mat-label>
-            <input matInput [(ngModel)]="user.userName" #name="ngModel" name="userName"
-              (ngModelChange)="checkUsername($event)" required>
-            <mat-error *ngIf="name.touched && name.invalid">
+            <input matInput [(ngModel)]="user.userName" #userName="ngModel" name="userName"
+              (ngModelChange)="usernameSignal.set($event)" required>
+            @if (userName.touched && userName.invalid) {
+            <mat-error>
               Username is required.
             </mat-error>
-            <mat-error *ngIf="usernameExists && !checking">
-              Username already exists!
-            </mat-error>
-            <mat-error *ngIf="checking">
-              Checking username...
-            </mat-error>
+            }
+            <div class="error-container">
+              @if (usernameExists()) {
+              <div class="error-message-red"> {{usernameErrorMessage()}} </div>
+              }
+            </div>
           </mat-form-field>
-          <div class="user-data">
-            <mat-form-field appearance="outline">
-              <mat-label>Password</mat-label>
-              <input matInput [(ngModel)]="user.password" name="password" type="password" required>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Confirm Password</mat-label>
-              <input matInput [(ngModel)]="user.confirmPassword" name="confirmPassword" type="password" required>
-            </mat-form-field>
-          </div>
-          <mat-form-field appearance="outline">
-            <mat-label>E-mail</mat-label>
-            <input matInput [(ngModel)]="user.email" name="email">
+
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Password</mat-label>
+            <input matInput [(ngModel)]="user.password" name="password" [type]="hide() ? 'password' : 'text'" #password="ngModel"
+              minlength="8" required>
+            <button mat-icon-button matSuffix (click)="clickEvent($event)" [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hide()">
+              <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            @if (password.invalid && password.touched){
+            <mat-error>Password is required and must be at least 8 characters long.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Confirm Password</mat-label>
+            <input matInput [(ngModel)]="user.confirmPassword" #confirmPassword="ngModel" minlength="8"
+              name="confirmPassword" [type]="hide() ? 'password' : 'text'" [pattern]="user.password" required>
+            <button mat-icon-button matSuffix (click)="clickEvent($event)" [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hide()">
+              <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            @if (confirmPassword.invalid && confirmPassword.touched) {
+            <mat-error>
+              Passwords do not match.
+            </mat-error>
+            }
           </mat-form-field>
         </div>
-        <div>
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>E-mail</mat-label>
+          <input matInput [(ngModel)]="user.email" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
+            name="email">
+        </mat-form-field>
+        <div class="chk-box-container">
+          <mat-checkbox class="example-margin">I agree to the <div (click)="openTerms()">Terms and Conditions</div></mat-checkbox>
+          <mat-checkbox class="example-margin">I agree to the <div (click)="openPrivacyPolicy()">Privacy Policy</div></mat-checkbox>
+        </div>
+
+        <div class="btn-container-user">
           <button mat-button matStepperPrevious>Back</button>
-          <button mat-raised-button matStepperNext type="submit">Next</button>
+          <button mat-raised-button matStepperNext
+            [disabled]="userForm.invalid || usernameExists() || !userForm.touched" type="submit">Next</button>
         </div>
       </form>
     </mat-step>

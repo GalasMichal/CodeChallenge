@@ -37,6 +37,9 @@ import { SectorService } from '../services/sector/sector.service';
 import { CompanyService } from '../services/company/company.service';
 import { User } from '../models/user.model';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { TermsComponent } from '../terms/terms.component';
+import { PrivacyPolicyComponent } from '../privacy-policy/privacy-policy.component';
 
 @Component({
   selector: 'app-sing-up',
@@ -54,7 +57,10 @@ import { MatIconModule } from '@angular/material/icon';
     MatSelectModule,
     HttpClientModule,
     MatError,
-    MatIconModule
+    MatIconModule,
+    MatCheckboxModule,
+    TermsComponent,
+    PrivacyPolicyComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './sing-up.component.html',
@@ -69,14 +75,22 @@ export class SingUpComponent {
   company: Company = new Company('', 0);
   user: User = new User('', '', '', '', '', '', this.company.companyId);
   sectors: Sector[] = [];
-  usernameExists: boolean | null = null;
-  checking: boolean = false;
+
+  // Signals for username checking
+  checkingUsername = signal(false);
+  usernameExists = signal(false);
+  usernameSignal = signal('');
+  usernameErrorMessage = signal('');
+
+  // Signals for Company checking
   checkingCompany = signal(false);
   companyExists = signal(false);
   companyNameSignal = signal('');
   errorMessage = signal('');
+
   selectedSectorName: string = '';
 
+  hide = signal(true);
   protected readonly value = signal('');
 
   protected onInput(event: Event) {
@@ -85,9 +99,7 @@ export class SingUpComponent {
 
   stepperOrientation$!: Observable<StepperOrientation>;
 
-
   constructor() {
-    
     effect(
       () => {
         // Effect überwacht nur das Lesen von Signalen
@@ -95,9 +107,13 @@ export class SingUpComponent {
       },
       { allowSignalWrites: true }
     );
+    effect(
+      () => {
+        this.checkUsername(this.usernameSignal());
+      },
+      { allowSignalWrites: true }
+    );
   }
-
-
 
   ngOnInit(): void {
     // Initialisieren der `stepperOrientation$` Observable
@@ -105,33 +121,50 @@ export class SingUpComponent {
       .observe('(min-width: 800px)')
       .pipe(map(({ matches }) => (matches ? 'horizontal' : 'vertical')));
 
-    this.loadSectors(); // Lade die Sektoren bei Initialisierung der Komponente
-
-
+    this.loadSectors(); // Lade die Sektoren
   }
 
   loadSectors(): void {
     this.sectorsService.getSectors().subscribe(
       (data: Sector[]) => {
-        this.sectors = data; // Setze die geladenen Sektoren
-        console.log('Geladene Sektoren:', this.sectors); // Überprüfen Sie die Daten in der Konsole
+        this.sectors = data;
+        console.log('Geladene Sektoren:', this.sectors);
       },
       (err: any) => {
-        console.error('Fehler beim Laden der Sektoren:', err.message); // Fehlerbehandlung
+        console.error('Fehler beim Laden der Sektoren:', err.message);
       }
     );
   }
 
+  clickEvent(event: MouseEvent) {
+    this.hide.set(!this.hide());
+    event.stopPropagation();
+  }
+
   checkUsername(username: string): void {
-    this.checking = true;
+    if (!username) {
+      this.usernameExists.set(false);
+      this.usernameErrorMessage.set('');
+      return;
+    }
+    this.checkingUsername.set(true);
+
     this.userService.checkUsernameExists(username).subscribe({
       next: (exists) => {
-        this.usernameExists = exists;
-        this.checking = false;
+        this.usernameExists.set(exists);
+        this.usernameErrorMessage.set(
+          exists ? 'Username already exists! Please choose another one.' : ''
+        );
+        console.log('Username exists:', this.usernameExists());
+        this.checkingUsername.set(false);
       },
       error: (error) => {
         console.error('Error checking username existence', error);
-        this.checking = false;
+        this.usernameExists.set(false);
+        this.usernameErrorMessage.set(
+          'An error occurred while checking the username.'
+        );
+        this.checkingUsername.set(false);
       },
     });
   }
@@ -147,14 +180,20 @@ export class SingUpComponent {
     this.companyService.checkCompanyExists(name).subscribe({
       next: (exists) => {
         this.companyExists.set(exists);
-        this.errorMessage.set(exists ? 'Company name already exists! Please choose another name.' : '');
+        this.errorMessage.set(
+          exists
+            ? 'Company name already exists! Please choose another name.'
+            : ''
+        );
         console.log('Company exists:', this.companyExists());
         this.checkingCompany.set(false);
       },
       error: (error) => {
         console.error('Error checking company existence', error);
         this.companyExists.set(false);
-        this.errorMessage.set('An error occurred while checking the company name.');
+        this.errorMessage.set(
+          'An error occurred while checking the company name.'
+        );
         this.checkingCompany.set(false);
       },
     });
@@ -187,10 +226,9 @@ export class SingUpComponent {
   }
 
   onSecondFormSubmit(userForm: NgForm): void {
-    if (userForm.valid && !this.usernameExists) {
+    if (userForm.valid && !this.usernameExists()) {
       console.log('userData', this.user);
 
-      // Überprüfe, ob die companyId gesetzt ist
       if (!this.user.companyId) {
         console.error('Company ID is missing!');
         return;
@@ -211,4 +249,8 @@ export class SingUpComponent {
       console.log('Form is not valid or username already exists');
     }
   }
+
+  openTerms(){}
+  openPrivacyPolicy(){}
+  
 }
