@@ -39,17 +39,42 @@ namespace RegistrationApi.Controllers
       return Ok(user);
     }
 
+    // GET: api/user/id/{username}
+    [HttpGet("id/{username}")]
+    public async Task<IActionResult> GetUserIdByUsername(string username)
+    {
+      var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+      if (user == null)
+      {
+        return NotFound();
+      }
+      return Ok(user.Id);
+    }
+
+    // GET: api/user/{id}
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetUserById(int id)
+    {
+      var user = await _context.Users.FindAsync(id);
+      if (user == null)
+      {
+        return NotFound();
+      }
+      return Ok(user);
+    }
+
     [HttpGet("test")]
     public IActionResult Test()
     {
       return Ok("Controller is working");
     }
 
+    // GET: api/user/exists/{username}
     [HttpGet("exists/{username}")]
     public async Task<IActionResult> CheckUsernameExists(string username)
     {
       var userExists = await _context.Users.AnyAsync(u => u.Username == username);
-      return Ok(userExists);
+      return Ok(userExists); // Gibt true oder false zurück
     }
 
     // POST: api/user/login

@@ -20,8 +20,8 @@ export class CompanyService {
     return this.http.get<boolean>(`${this.apiUrl}/exists/${name}`);
   }
 
-  getCompanyById(Id: number): Observable<Company> {
-    return this.http.get<Company>(`${this.apiUrl}/${Id}`);
+  getCompanyById(companyId: number): Observable<Company> {
+    return this.http.get<Company>(`${this.apiUrl}/${companyId}`);
   }
 
   addCompany(company: Company): Observable<Company> {

@@ -1,12 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [],
+  imports: [MatCardModule, CommonModule],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss'
+  styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
 
+  private router = inject(Router);
+
+  message: string = '';
+
+  ngOnInit(): void {
+    this.showLoginMessage();
+  }
+
+  showLoginMessage(): void {
+    // Hier kannst du den Router nutzen, um nach dem Login den Benutzer weiterzuleiten
+    this.message = 'You have successfully logged in!';
+  }
 }

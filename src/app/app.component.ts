@@ -24,6 +24,7 @@ export class AppComponent {
   isDashboardPage: boolean = false;
 
   ngOnInit() {
+
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.isLoginPage = event.urlAfterRedirects === '/';

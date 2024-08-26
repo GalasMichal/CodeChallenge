@@ -1,3 +1,5 @@
+import { Company } from "./company.model";
+
 export class User {
   id?: number;
   firstName: string;
@@ -7,6 +9,7 @@ export class User {
   confirmPassword: string;
   email?: string;
   companyId?: number;
+  company?: Company;
 
   constructor(
     firstName: string = '',
@@ -15,7 +18,8 @@ export class User {
     password: string = '',
     confirmPassword: string = '',
     email?: string,
-    companyId?: number
+    companyId?: number,
+    company?: Company
   ) {
     this.firstName = firstName;
     this.lastName = lastName;
@@ -24,5 +28,6 @@ export class User {
     this.confirmPassword = confirmPassword;
     this.email = email;
     this.companyId = companyId;
+    this.company = company;
   }
 }

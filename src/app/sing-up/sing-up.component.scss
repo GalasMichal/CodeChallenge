@@ -28,6 +28,12 @@ mat-stepper{
   height: 100%;
 }
 
+.btn-back{
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
 .input-with-btn {
   display: flex;
 }
@@ -39,6 +45,11 @@ mat-stepper{
   padding-right: 5%;
 }
 
+.info{
+  height: 100%;
+  text-align: center;
+  min-height: 300px;
+}
 
 .mat-mdc-form-field {
   position: relative !important;

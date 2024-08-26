@@ -9,9 +9,9 @@
     <form class="full-width" (ngSubmit)="onSubmit()">
     <mat-form-field class="full-width" appearance="outline">
       <mat-label>Please enter your name</mat-label>
-      <input matInput autocomplete="username" [(ngModel)]="username" name="username" required>
+      <input matInput autocomplete="username" [(ngModel)]="userName" name="username" required>
       <mat-icon matSuffix>person</mat-icon>
-      @if(!username && submitted){
+      @if(!userName && submitted){
       <mat-hint class="error-message-red">Please enter your name</mat-hint>
       }
     </mat-form-field>

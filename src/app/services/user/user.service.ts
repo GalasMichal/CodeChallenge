@@ -8,9 +8,7 @@ import { User } from '../../models/user.model';
 })
 export class UserService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5248/api/user';
-
-
+  private apiUrl = 'http://localhost:5248/api/User';
 
   getUser(): Observable<User[]> {
     return this.http.get<User[]>(this.apiUrl);
@@ -20,7 +18,7 @@ export class UserService {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials);
   }
 
-  checkUsernameExists(username: string): Observable<boolean> {
+   checkUsernameExists(username: string): Observable<boolean> {
     return this.http.get<boolean>(`${this.apiUrl}/exists/${username}`);
   }
 

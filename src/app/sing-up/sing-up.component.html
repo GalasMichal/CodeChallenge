@@ -1,6 +1,6 @@
 <mat-card class="sing-up-card" appearance="outlined">
   <mat-card-title>Sign Up</mat-card-title>
-  <mat-stepper class="bg-gradient" [orientation]="(stepperOrientation$ | async)!">
+  <mat-stepper #stepper class="bg-gradient" [orientation]="(stepperOrientation$ | async)!">
 
     <mat-step label="Fill data about your company">
       <form (ngSubmit)="onFirstFormSubmit(companyForm)" #companyForm="ngForm">
@@ -197,7 +197,7 @@
         </div>
         <div class="btn-container-user">
           <button mat-button matStepperPrevious>Back</button>
-          <button mat-raised-button type="submit">Finish</button>
+          <button mat-raised-button (click)="finishRegistration(stepper)" >Finish</button>
         </div>
       </div>
     </mat-step>
@@ -205,9 +205,9 @@
 
     <mat-step>
       <ng-template matStepLabel>Done</ng-template>
-      <p>You are now done.</p>
-      <div>
-        <button mat-button matStepperPrevious>Back</button>
+      <p class="info">{{finishMessage()}} hallo welt</p>
+      <div class="btn-back">
+        <button  mat-button matStepperPrevious>Back</button>
       </div>
     </mat-step>
   </mat-stepper>
