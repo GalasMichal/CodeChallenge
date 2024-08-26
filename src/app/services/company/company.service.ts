@@ -4,13 +4,13 @@ import { Observable } from 'rxjs';
 import { Company } from '../../models/company.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CompanyService {
-  private http = inject(HttpClient)
+  private http = inject(HttpClient);
   private apiUrl = 'http://localhost:5248/api/company';
 
-  constructor() { }
+  constructor() {}
 
   getCompanies(): Observable<Company[]> {
     return this.http.get<Company[]>(this.apiUrl);

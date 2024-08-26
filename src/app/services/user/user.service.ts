@@ -14,11 +14,11 @@ export class UserService {
     return this.http.get<User[]>(this.apiUrl);
   }
 
-  login(credentials: { username: string, password: string }): Observable<any> {
+  login(credentials: { username: string; password: string }): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials);
   }
 
-   checkUsernameExists(username: string): Observable<boolean> {
+  checkUsernameExists(username: string): Observable<boolean> {
     return this.http.get<boolean>(`${this.apiUrl}/exists/${username}`);
   }
 

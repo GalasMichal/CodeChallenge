@@ -25,7 +25,7 @@ import { Router, RouterModule } from '@angular/router';
     ReactiveFormsModule,
     MatIconModule,
     RouterModule,
-    MatError
+    MatError,
   ],
   templateUrl: './log-in.component.html',
   styleUrl: './log-in.component.scss',
@@ -44,29 +44,28 @@ export class LogInComponent {
   }
 
   onSubmit() {
-    this.submitted = true; // Markiert das Formular als eingereicht
+    this.submitted = true;
 
     this.userService.checkUsernameExists(this.userName).subscribe({
       next: (response) => {
-        // Benutzer existiert, nun anmelden
-        this.userService.login({ username: this.userName, password: this.password }).subscribe({
-          next: (loginResponse) => {
-            console.log('Login erfolgreich', loginResponse);
-            // Speichern des Tokens oder anderer relevanter Daten
-            localStorage.setItem('authToken', loginResponse.token); // Beispiel für Token-Speicherung
-            // Weiterleitung nach erfolgreichem Login
-            this.router.navigate(['/dashboard']); // Ersetzen Sie '/dashboard' mit Ihrer Zielseite
-          },
-          error: (error) => {
-            console.error('Login fehlgeschlagen', error);
-            this.errorMessage = 'Benutzername oder Passwort ist falsch'; // Fehlermeldung anzeigen
-          }
-        });
+        this.userService
+          .login({ username: this.userName, password: this.password })
+          .subscribe({
+            next: (loginResponse) => {
+              console.log('Login erfolgreich', loginResponse);
+              localStorage.setItem('authToken', loginResponse.token);
+              this.router.navigate(['/dashboard']);
+            },
+            error: (error) => {
+              console.error('Login fehlgeschlagen', error);
+              this.errorMessage = 'Benutzername oder Passwort ist falsch';
+            },
+          });
       },
       error: () => {
         console.error('Benutzer existiert nicht');
-        this.errorMessage = 'Benutzer existiert nicht'; // Fehlermeldung anzeigen
-      }
+        this.errorMessage = 'Benutzer existiert nicht';
+      },
     });
   }
 }

@@ -11,7 +11,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-
   private router = inject(Router);
 
   message: string = '';
@@ -21,7 +20,6 @@ export class DashboardComponent implements OnInit {
   }
 
   showLoginMessage(): void {
-    // Hier kannst du den Router nutzen, um nach dem Login den Benutzer weiterzuleiten
     this.message = 'You have successfully logged in!';
   }
 }

@@ -100,8 +100,6 @@ export class SingUpComponent {
   checkboxStatePrivacy = false;
   checkboxStateTerms = false;
 
-
-
   protected onInput(event: Event) {
     this.value.set((event.target as HTMLInputElement).value);
   }
@@ -130,7 +128,7 @@ export class SingUpComponent {
       .observe('(min-width: 800px)')
       .pipe(map(({ matches }) => (matches ? 'horizontal' : 'vertical')));
 
-    this.loadSectors(); // Lade die Sektoren
+    this.loadSectors();
     console.log('checkbox1', this.checkboxStatePrivacy);
   }
 
@@ -151,7 +149,6 @@ export class SingUpComponent {
     event.stopPropagation();
   }
 
-
   checkUsername(username: string): void {
     if (!username) {
       this.usernameExists.set(false);
@@ -163,11 +160,11 @@ export class SingUpComponent {
     this.userService.checkUsernameExists(username).subscribe({
       next: (exists) => {
         if (exists) {
-          // Benutzer existiert
           this.usernameExists.set(true);
-          this.usernameErrorMessage.set('Username already exists! Please choose another one.');
+          this.usernameErrorMessage.set(
+            'Username already exists! Please choose another one.'
+          );
         } else {
-          // Benutzer existiert nicht
           this.usernameExists.set(false);
           this.usernameErrorMessage.set('');
         }
@@ -177,7 +174,9 @@ export class SingUpComponent {
       error: (error) => {
         console.error('Error checking username existence', error);
         this.usernameExists.set(false);
-        this.usernameErrorMessage.set('An error occurred while checking the username.');
+        this.usernameErrorMessage.set(
+          'An error occurred while checking the username.'
+        );
         this.checkingUsername.set(false);
       },
     });
@@ -219,79 +218,32 @@ export class SingUpComponent {
     this.selectedSectorName = selectedSector ? selectedSector.bezeichnung : '';
   }
 
-  onFirstFormSubmit(stepper: any): void {
+  onFirstFormSubmit(stepper: any): void {}
 
-  }
-
-
-  onSecondFormSubmit(stepper: any): void {
-    
-  }
+  onSecondFormSubmit(stepper: any): void {}
 
   finishRegistration(stepper: any): void {
-
-
-    this.companyService.addCompany(this.company).pipe(
-      switchMap((companyResponse) => {
-        this.user.companyId = companyResponse.companyId;
-        return this.userService.addUser(this.user);
-      })
-    ).subscribe({
-      next: (userResponse) => {
-        this.isSuccess.set(true);
-        this.finishMessage.set('Registration successful!');
-        stepper.next();
-      },
-      error: (error) => {
-        this.isSuccess.set(false);
-        this.finishMessage.set('An error occurred during registration.');
-        console.error('Error during registration', error);
-      }
-    });
+    this.companyService
+      .addCompany(this.company)
+      .pipe(
+        switchMap((companyResponse) => {
+          this.user.companyId = companyResponse.companyId;
+          return this.userService.addUser(this.user);
+        })
+      )
+      .subscribe({
+        next: (userResponse) => {
+          this.isSuccess.set(true);
+          this.finishMessage.set('Registration successful!');
+          stepper.next();
+        },
+        error: (error) => {
+          this.isSuccess.set(false);
+          this.finishMessage.set('An error occurred during registration.');
+          console.error('Error during registration', error);
+        },
+      });
   }
-
-  // onFirstFormSubmit(companyForm: NgForm): void {
-  //   if (companyForm.valid ) {
-  //     this.companyService.addCompany(this.company).subscribe({
-  //       next: (response: Company) => {
-  //         console.log('Firma erfolgreich hinzugefügt:', response);
-  //         this.user.companyId = response.companyId;
-  //         console.log('Updated User with companyId:', this.user);
-  //       },
-  //       error: (error) => {
-  //         console.error('Fehler beim Hinzufügen der Firma:', error);
-  //       },
-  //       complete: () => console.info('send post complete'),
-  //     });
-  //   }
-  // }
-
-
-
-  // onSecondFormSubmit(userForm: NgForm): void {
-  //   if (userForm.valid && !this.usernameExists() && this.allCheckboxesChecked()) {
-  //     console.log('userData', this.user);
-
-  //     if (!this.user.companyId) {
-  //       console.error('Company ID is missing!');
-  //       return;
-  //     }
-
-  //     this.userService.addUser(this.user).subscribe({
-  //       next: (response) => {
-  //         console.log('User erfolgreich hinzugefügt', response);
-  //       },
-  //       error: (error) => {
-  //         console.error('Fehler beim Hinzufügen des Users', error);
-  //       },
-  //       complete: () => {
-  //         console.info('User-Daten erfolgreich gesendet');
-  //       },
-  //     });
-  //   } else {
-  //     console.log('Form is not valid or username already exists');
-  //   }
-  // }
 
   allCheckboxesChecked(): boolean {
     return this.checkboxStateTerms && this.checkboxStatePrivacy;

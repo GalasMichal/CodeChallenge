@@ -94,8 +94,8 @@
 
           <mat-form-field class="full-width" appearance="outline">
             <mat-label>Password</mat-label>
-            <input matInput [(ngModel)]="user.password" autocomplete="new-password"  name="password" [type]="hide() ? 'password' : 'text'"
-              #password="ngModel" minlength="8" required>
+            <input matInput [(ngModel)]="user.password" autocomplete="new-password" name="password"
+              [type]="hide() ? 'password' : 'text'" #password="ngModel" minlength="8" required>
             <button mat-icon-button matSuffix (click)="clickEvent($event)" [attr.aria-label]="'Hide password'"
               [attr.aria-pressed]="hide()">
               <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
@@ -106,8 +106,9 @@
           </mat-form-field>
           <mat-form-field class="full-width" appearance="outline">
             <mat-label>Confirm Password</mat-label>
-            <input matInput [(ngModel)]="user.confirmPassword" autocomplete="new-password" #confirmPassword="ngModel" minlength="8"
-              name="confirmPassword" [type]="hide() ? 'password' : 'text'" [pattern]="user.password" required>
+            <input matInput [(ngModel)]="user.confirmPassword" autocomplete="new-password" #confirmPassword="ngModel"
+              minlength="8" name="confirmPassword" [type]="hide() ? 'password' : 'text'" [pattern]="user.password"
+              required>
             <button mat-icon-button matSuffix (click)="clickEvent($event)" [attr.aria-label]="'Hide password'"
               [attr.aria-pressed]="hide()">
               <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
@@ -153,7 +154,8 @@
     <mat-step label="Overview">
       <div class="content-container">
         <h1 class="w400">Please review your information</h1>
-        <p class="w600">Make sure that all the details you have provided are correct. If everything looks good, click "Finish" to
+        <p class="w600">Make sure that all the details you have provided are correct. If everything looks good, click
+          "Finish" to
           proceed. If you need to make changes, click "Back" to correct your information.</p>
 
         <div class="main-content-user-overview">
@@ -197,7 +199,7 @@
         </div>
         <div class="btn-container-user">
           <button mat-button matStepperPrevious>Back</button>
-          <button mat-raised-button (click)="finishRegistration(stepper)" >Finish</button>
+          <button mat-raised-button (click)="finishRegistration(stepper)">Finish</button>
         </div>
       </div>
     </mat-step>
@@ -207,7 +209,7 @@
       <ng-template matStepLabel>Done</ng-template>
       <p class="info">{{finishMessage()}} hallo welt</p>
       <div class="btn-back">
-        <button  mat-button matStepperPrevious>Back</button>
+        <button mat-button matStepperPrevious>Back</button>
       </div>
     </mat-step>
   </mat-stepper>
