@@ -1,5 +1,29 @@
 
 <div class="main-content"><router-outlet></router-outlet></div>
 
-  <mat-card-content class="sing-up-card">Not a My App user ? <button [routerLink]="['/signUp']" mat-raised-button>Sign up</button></mat-card-content>
+  <mat-card-content class="sing-up-card">
+    <div class="auth-buttons">
+
+      <button
+        [routerLink]="['/']"
+        mat-raised-button
+        [ngStyle]="{ 'display': isSignUpPage ? 'inline-block' : 'none' }">
+        Log in
+      </button>
+
+      <button
+        [routerLink]="['/signUp']"
+        mat-raised-button
+        [ngStyle]="{ 'display': isLoginPage ? 'inline-block' : 'none' }">
+        Sign up
+      </button>
+
+      <button
+        mat-raised-button
+        *ngIf="isDashboardPage"
+        (click)="logout()">
+        Logout
+      </button>
+    </div>
+  </mat-card-content>
 

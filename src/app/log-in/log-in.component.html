@@ -6,26 +6,29 @@
   </mat-card-header>
 
   <mat-card-content>
+    <form class="full-width" (ngSubmit)="onSubmit()">
     <mat-form-field class="full-width" appearance="outline">
       <mat-label>Please enter your name</mat-label>
-      <input matInput [(ngModel)]="username" name="username" required>
+      <input matInput autocomplete="username" [(ngModel)]="username" name="username" required>
       <mat-icon matSuffix>person</mat-icon>
       @if(!username && submitted){
-      <mat-hint>Please enter your name</mat-hint>
+      <mat-hint class="error-message-red">Please enter your name</mat-hint>
       }
     </mat-form-field>
-    <mat-form-field appearance="outline">
+    <mat-form-field class="full-width" appearance="outline">
       <mat-label>Please enter your password</mat-label>
-      <input type="password" matInput [(ngModel)]="password" name="password" required  [type]="isVisible ? 'password' : 'text'" />
+      <input type="password" autocomplete="current-password" matInput [(ngModel)]="password" name="password" required  [type]="isVisible ? 'password' : 'text'" />
       <button mat-icon-button matSuffix (click)="showPassword()">
         <mat-icon>{{isVisible ? 'visibility_off' : 'visibility'}}</mat-icon>
       </button>
       @if(!password && submitted){
-        <mat-hint>Please enter your password</mat-hint>
+        <mat-hint class="error-message-red">Please enter your password</mat-hint>
         }
     </mat-form-field>
+  </form>
   </mat-card-content>
   <mat-card-actions>
     <button class="btn-log-in" mat-raised-button (click)="onSubmit()">Log in</button>
+
   </mat-card-actions>
 </mat-card>
