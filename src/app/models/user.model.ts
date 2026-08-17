@@ -11,6 +11,10 @@ export class User {
   companyId?: number;
   company?: Company;
 
+
+  
+
+
   constructor(
     firstName: string = '',
     lastName: string = '',

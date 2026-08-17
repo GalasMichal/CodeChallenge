@@ -73,7 +73,7 @@ export class SingUpComponent {
   private companyService = inject(CompanyService);
   readonly dialog = inject(MatDialog);
 
-  company: Company = new Company('', 0);
+  company$: Company = new Company('', 0);
   user: User = new User('', '', '', '', '', '', this.company.companyId);
   sectors: Sector[] = [];
 
